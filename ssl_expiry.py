@@ -49,12 +49,16 @@ def test_host(hostname: str, buffer_days: int=30) -> str:
     except ssl.CertificateError as e:
         return f'{hostname} cert error {e}'
     except ssl.SSLError as e:
-        return f'{hostname} cert error {e}'
+        return f'{hostname} ssl error {e}'
     except socket.timeout as e:
-        return f'{hostname} could not connect'
+        return f'{hostname} socket error: timeout'
+    except socket.gaierror as e:
+        return f'{hostname} socket error: {e}'
+    except Exception as e:
+        return f'{hostname} unexpected error: {e}'
     else:
         if will_expire_in < datetime.timedelta(days=0):
-            return f'{hostname} cert will expired'
+            return f'{hostname} cert is expired'
         elif will_expire_in < datetime.timedelta(days=buffer_days):
             return f'{hostname} cert will expire in {will_expire_in}'
         else:
