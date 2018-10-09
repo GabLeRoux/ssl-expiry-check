@@ -9,7 +9,6 @@ import socket
 import ssl
 import time
 
-
 logger = logging.getLogger('SSLVerify')
 
 
@@ -42,8 +41,9 @@ def ssl_valid_time_remaining(hostname: str) -> datetime.timedelta:
     return expires - datetime.datetime.utcnow()
 
 
-def test_host(hostname: str, buffer_days: int=30) -> str:
+def test_host(hostname: str, buffer_days: int = 30) -> str:
     """Return test message for hostname cert expiration."""
+    # noinspection PyBroadException
     try:
         will_expire_in = ssl_valid_time_remaining(hostname)
     except ssl.CertificateError as e:
@@ -51,7 +51,7 @@ def test_host(hostname: str, buffer_days: int=30) -> str:
     except ssl.SSLError as e:
         return f'{hostname} ssl error {e}'
     except socket.timeout as e:
-        return f'{hostname} socket error: timeout'
+        return f'{hostname} socket error: timeout: {e}'
     except socket.gaierror as e:
         return f'{hostname} socket error: {e}'
     except Exception as e:
@@ -66,10 +66,10 @@ def test_host(hostname: str, buffer_days: int=30) -> str:
 
 
 if __name__ == '__main__':
-    loglevel = os.environ.get('LOGLEVEL', 'INFO')
-    numeric_level = getattr(logging, loglevel.upper(), None)
+    log_level = os.environ.get('LOGLEVEL', 'INFO')
+    numeric_level = getattr(logging, log_level.upper(), None)
     if not isinstance(numeric_level, int):
-        raise ValueError('Invalid log level: %s' % loglevel)
+        raise ValueError('Invalid log level: %s' % log_level)
     logging.basicConfig(level=numeric_level)
 
     start = time.time()

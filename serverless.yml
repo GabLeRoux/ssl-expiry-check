@@ -1,0 +1,13 @@
+service: ssl-expiry-check
+
+provider:
+  name: aws
+  runtime: python3.6
+
+functions:
+  main:
+    handler: ssl_expiry_lambda.main
+    environment:
+      HOSTLIST: ${env:HOSTLIST}
+    events:
+    - schedule: rate(1 day)
