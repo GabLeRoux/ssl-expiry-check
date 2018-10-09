@@ -21,6 +21,7 @@ facebook.com cert is fine
 ```bash
 npm i -g serverless
 export AWS_PROFILE=your-aws-profile
+export HOSTLIST=google.com,facebook.com
 sls deploy
 ```
 
